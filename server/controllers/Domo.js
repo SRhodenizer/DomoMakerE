@@ -71,10 +71,8 @@ const getDomos = (request, response) => {
 };
 
 const removeDomo = (request, response) => {
-    const req = request;
-    const res = response;
-    
-    Domo.DomoModel.removeDomo(req.session.account._id,req.body.query); 
+  Domo.DomoModel.removeDomo(request.session.account._id, request.body.query);
+  return response;
 };
 
 module.exports.makerPage = makerPage;
