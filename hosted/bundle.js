@@ -6,7 +6,7 @@ var handleDomo = function handleDomo(e) {
     width: 'hide'
   }, 350);
 
-  if ($("#domoName").val() == '' || $("#domoAge").val() == '') {
+  if ($("#domoName").val() == '' || $("#domoAge").val() == '' || $("#domoLevel").val() == '') {
     handleError("RAWR! All fields are required");
     return false;
   }
@@ -14,6 +14,17 @@ var handleDomo = function handleDomo(e) {
   sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function () {
     loadDomosFromServer();
   });
+  return false;
+};
+
+var handleClick = function handleClick(e) {
+  e.preventDefault(); //send the ajax for the button's function
+
+  sendAjax('POST', '/removeDomo', {
+    _csrf: document.querySelector('#csrf').value,
+    query: document.querySelector('#removeDomoName').value
+  });
+  loadDomosFromServer();
   return false;
 };
 
@@ -39,7 +50,15 @@ var DomoForm = function DomoForm(props) {
       type: "text",
       name: "age",
       placeholder: "Domo Age"
+    }), /*#__PURE__*/React.createElement("label", {
+      htmlFor: "level"
+    }, "Lvl: "), /*#__PURE__*/React.createElement("input", {
+      id: "domoLevel",
+      type: "text",
+      name: "level",
+      placeholder: "Domo Level"
     }), /*#__PURE__*/React.createElement("input", {
+      id: "csrf",
       type: "hidden",
       name: "_csrf",
       value: props.csrf
@@ -47,6 +66,16 @@ var DomoForm = function DomoForm(props) {
       className: "makeDomoSubmit",
       type: "submit",
       value: "Make Domo"
+    }), /*#__PURE__*/React.createElement("input", {
+      className: "removeDomoSubmit",
+      type: "button",
+      value: "Remove Domo",
+      onClick: handleClick
+    }), /*#__PURE__*/React.createElement("input", {
+      id: "removeDomoName",
+      type: "text",
+      name: "removeName",
+      placeholder: "Domo Name to Remove"
     }))
   );
 };
@@ -73,7 +102,9 @@ var DomoList = function DomoList(props) {
         className: "domoName"
       }, "Name: ", domo.name), /*#__PURE__*/React.createElement("h3", {
         className: "domoAge"
-      }, "Age: ", domo.age))
+      }, "Age: ", domo.age), /*#__PURE__*/React.createElement("h3", {
+        className: "domoLevel"
+      }, "Level: ", domo.level))
     );
   });
   return (/*#__PURE__*/React.createElement("div", {

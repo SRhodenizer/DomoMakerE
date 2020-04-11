@@ -3,7 +3,7 @@ const handleDomo = (e) => {
     
     $("#domoMessage").animate({width:'hide'},350);
     
-    if($("#domoName").val() == '' || $("#domoAge").val() == ''){
+    if($("#domoName").val() == '' || $("#domoAge").val() == ''|| $("#domoLevel").val() == ''){
         handleError("RAWR! All fields are required");
         return false;
     }
@@ -11,6 +11,17 @@ const handleDomo = (e) => {
     sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(),function(){
        loadDomosFromServer(); 
     });
+    
+    return false;
+};
+
+const handleClick = (e) =>{
+    e.preventDefault();
+    
+    //send the ajax for the button's function
+    sendAjax('POST','/removeDomo', {_csrf: document.querySelector('#csrf').value,query:document.querySelector('#removeDomoName').value});
+    
+    loadDomosFromServer();
     
     return false;
 };
@@ -28,8 +39,12 @@ const DomoForm = (props) => {
         <input id="domoName" type="text" name="name" placeholder="Domo Name"/>
         <label htmlFor="age">Age: </label>
         <input id="domoAge" type="text" name="age" placeholder="Domo Age"/>
-        <input type="hidden" name="_csrf" value={props.csrf} />
+        <label htmlFor="level">Lvl: </label>
+        <input id="domoLevel" type="text" name="level" placeholder="Domo Level"/>
+        <input id="csrf" type="hidden" name="_csrf" value={props.csrf} />
         <input className="makeDomoSubmit" type="submit" value="Make Domo" />
+        <input className="removeDomoSubmit" type="button" value="Remove Domo" onClick={handleClick}/>
+        <input id="removeDomoName" type="text" name="removeName" placeholder="Domo Name to Remove"/>
         </form>
     );  
 };
@@ -49,7 +64,9 @@ const DomoList = function(props){
                 <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
                 <h3 className="domoName">Name: {domo.name}</h3>
                 <h3 className="domoAge">Age: {domo.age}</h3>
+                <h3 className="domoLevel">Level: {domo.level}</h3>
             </div>
+            
         );
     });
     
@@ -89,3 +106,4 @@ const getToken = () => {
 $(document).ready(function(){
    getToken(); 
 });
+
